@@ -1,0 +1,67 @@
+import json
+def load_tasks(filename):
+    try:
+        with open(filename, 'r') as file:
+            tasks = json.load(file)
+    except FileNotFoundError:
+        tasks = []
+    return tasks
+def save_tasks(filename, tasks):
+    try:
+        with open(filename, 'w') as file:
+            json.dump(tasks, file)
+    except Exception as e:
+        print("Error saving tasks:", e)
+def display_tasks(tasks):
+    if tasks:
+        for i, task in enumerate(tasks, start=1):
+            print(f"{i}. {task['task_name']} - {task.get('due_date', 'No due date')} - Priority: {task.get('priority', 'No priority')}")
+    else:
+        print("No tasks.")
+def add_task(tasks):
+    task_name = input("Enter task name: ")
+    due_date = input("Enter due date (optional): ")
+    priority = input("Enter priority (optional): ")
+
+    task = {'task_name': task_name}
+    if due_date:
+        task['due_date'] = due_date
+    if priority:
+        task['priority'] = priority
+
+    tasks.append(task)
+    print("Task added successfully.")
+def complete_task(tasks):
+    display_tasks(tasks)
+    task_index = int(input("Enter the index of the task to mark as completed: ")) - 1
+    tasks.pop(task_index)
+    print("Task marked as completed.")
+
+def main():
+    filename = 'tasks.json'
+    tasks = load_tasks(filename)
+
+    while True:
+        print("\nTODO LIST")
+        print("1. View tasks")
+        print("2. Add task")
+        print("3. Mark task as completed")
+        print("4. Exit")
+
+        choice = input("Enter your choice: ")
+
+        if choice == '1':
+            display_tasks(tasks)
+        elif choice == '2':
+            add_task(tasks)
+        elif choice == '3':
+            complete_task(tasks)
+        elif choice == '4':
+            save_tasks(filename, tasks)
+            print("Exiting...")
+            return
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
